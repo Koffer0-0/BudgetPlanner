@@ -151,7 +151,7 @@ const getRandomColor = () => {
           <span class="text-lg mt-auto self-start font-semibold">Total: {{ totalExpense }} {{ currency }}</span>
         </div>
 
-        <div class="mt-6">
+        <div class="mt-6" v-if="categories.length > 0">
           <div class="flex space-x-3 mb-4 justify-end">
             <button
               v-for="type in chartTypes"

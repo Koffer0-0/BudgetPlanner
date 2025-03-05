@@ -10,11 +10,11 @@ const totalBudget = ref(500000); // Общий бюджет
 const category = ref({ name: "", amount: 0 });
 
 const categories = ref([
-  { id: 1, name: "Коммуналка", amount: 30200 },
-  { id: 2, name: "Кредит", amount: 50000 },
-  { id: 3, name: "Продукты", amount: 50000 },
-  { id: 4, name: "Откладывание", amount: 70000 },
-  { id: 5, name: "Свободные деньги", amount: 50000 },
+  { id: 1, name: "Коммуналка", amount: 30200, color: "#FF6384" },
+  { id: 2, name: "Кредит", amount: 50000, color: "#36A2EB" },
+  { id: 3, name: "Продукты", amount: 50000, color: "#FFCE56" },
+  { id: 4, name: "Откладывание", amount: 70000, color: "#4BC0C0" },
+  { id: 5, name: "Свободные деньги", amount: 50000, color: "#9966FF" },
 ]);
 
 const options = computed(() => ({
@@ -58,6 +58,28 @@ function addCategory() {
 function removeCategory(id: number) {
   categories.value = categories.value.filter((category) => category.id !== id);
 }
+
+const getRandomColor = () => {
+  const colors = ["#e74c3c", "#8e44ad", "#3498db", "#f1c40f", "#2ecc71", "#34495e"];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
+
+const getTextColor = (bgColor) => {
+  const hex = bgColor.replace("#", "");
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness > 128 ? "#000" : "#FFF";
+}
+
+const getUniqueColor = () => {
+  let color;
+  do {
+    color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")}`;
+  } while (usedColors.value.has(color));
+  return color;
+};
 </script>
 
 <template>
@@ -111,6 +133,7 @@ function removeCategory(id: number) {
               v-for="category in categories"
               :key="category.name"
               class="flex justify-between items-center px-4 py-3 rounded text-black shadow-md"
+              :style="{ backgroundColor: category.color, color: getTextColor(category.color) }"
             >
               <span class="text-lg font-semibold">{{ category.name }}</span>
               <div class="flex gap-2">

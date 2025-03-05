@@ -12,6 +12,18 @@ const categories = ref([
   { id: 5, name: "Свободные деньги", amount: 50000 },
 ]);
 
+function addCategory() {
+  if (category.value.name && category.value.amount) {
+    categories.value.push({
+      id: Date.now(), // Генерируем уникальный id
+      name: category.value.name,
+      amount: Number(category.value.amount),
+      color: getRandomColor(),
+    });
+    category.value.name = "";
+    category.value.amount = 0;
+  }
+}
 </script>
 
 <template>
@@ -45,6 +57,12 @@ const categories = ref([
             class="p-2 border rounded-md w-1/3 min-w-[120px]"
             placeholder="Название"
           />
+          <button
+            @click="addCategory"
+            class="bg-green-500 text-white px-2 py-2 rounded-md text-2xl"
+          >
+            <IconPlus/>
+          </button>
         </div>
       </div>
 

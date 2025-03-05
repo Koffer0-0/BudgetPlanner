@@ -7,7 +7,6 @@ import {
 } from "vue-chart-3";
 import {Chart, registerables} from "chart.js";
 import IconPlus from "@/components/icons/IconPlus.vue";
-
 import BarIcon from "@/components/icons/BarIcon.vue";
 import DonutIcon from "./components/icons/DonutIcon.vue";
 import PieIcon from "@/components/icons/PieIcon.vue";
@@ -15,19 +14,18 @@ import PieIcon from "@/components/icons/PieIcon.vue";
 Chart.register(...registerables);
 
 const totalBudget = ref(500000); // Общий бюджет
-const category = ref({ name: "", amount: 0 });
-
 const chartTypes = [
   { value: "pie", icon: PieIcon },
   { value: "doughnut", icon: DonutIcon },
   { value: "bar", icon: BarIcon },
 ];
+const category = ref({name: "", amount: 0});
 const categories = ref([
-  { id: 1, name: "Коммуналка", amount: 30200, color: "#FF6384" },
-  { id: 2, name: "Кредит", amount: 50000, color: "#36A2EB" },
-  { id: 3, name: "Продукты", amount: 50000, color: "#FFCE56" },
-  { id: 4, name: "Откладывание", amount: 70000, color: "#4BC0C0" },
-  { id: 5, name: "Свободные деньги", amount: 50000, color: "#9966FF" },
+  {id: 1, name: "Коммуналка", amount: 30200, color: "#FF6384"},
+  {id: 2, name: "Кредит", amount: 50000, color: "#36A2EB"},
+  {id: 3, name: "Продукты", amount: 50000, color: "#FFCE56"},
+  {id: 4, name: "Откладывание", amount: 70000, color: "#4BC0C0"},
+  {id: 5, name: "Свободные деньги", amount: 50000, color: "#9966FF"},
 ]);
 const selectedChart = ref("pie"); // По умолчанию Pie Chart
 

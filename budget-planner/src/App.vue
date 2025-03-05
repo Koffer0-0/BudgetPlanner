@@ -24,6 +24,10 @@ function addCategory() {
     category.value.amount = 0;
   }
 }
+
+function removeCategory(id: number) {
+  categories.value = categories.value.filter((category) => category.id !== id);
+}
 </script>
 
 <template>
@@ -79,6 +83,9 @@ function addCategory() {
               <span class="text-lg font-semibold">{{ category.name }}</span>
               <div class="flex gap-2">
                 <span class="text-lg">{{ category.amount }}₸</span>
+                <button @click="removeCategory(category.id)" class="text-white text-sm">
+                  ✖
+                </button>
               </div>
             </li>
           </ul>

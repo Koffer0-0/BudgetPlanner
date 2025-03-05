@@ -119,7 +119,7 @@ const getRandomColor = () => {
           />
           <button
             @click="addCategory"
-            class="bg-green-500 text-white px-2 py-2 rounded-md text-2xl"
+            class="bg-green-600 text-white px-2 py-2 rounded-md text-2xl"
           >
             <IconPlus/>
           </button>
@@ -157,7 +157,7 @@ const getRandomColor = () => {
               v-for="type in chartTypes"
               :key="type.value"
               @click="selectedChart = type.value"
-              :class="['px-4 py-2 rounded', selectedChart === type.value ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600']"
+              :class="['px-4 py-2 rounded', selectedChart === type.value ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-600']"
             >
               <component :is="type.icon" class="h-8 w-8"/>
             </button>

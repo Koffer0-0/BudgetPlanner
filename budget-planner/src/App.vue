@@ -25,6 +25,13 @@ const options = computed(() => ({
     },
   },
 }));
+
+// Вычисляем остаток бюджета
+const remainingBudget = computed(() => {
+  return totalBudget.value - categories.value.reduce((sum, cat) => sum + cat.amount, 0);
+});
+
+// Данные для графика
 const budgetData = computed(() => ({
   labels: categories.value.map((c) => c.name),
   datasets: [
@@ -67,6 +74,8 @@ function removeCategory(id: number) {
           type="number"
           class="mt-2 p-2 w-75 border rounded-md"
         />
+        <p class="text-gray-700 font-bold mt-2">Остаток: {{ remainingBudget }}₸</p>
+        <p v-if="remainingBudget < 0" class="text-red-600 font-bold">Вы вышли за бюджет!</p>
       </div>
 
       <!-- Ввод новой категории -->

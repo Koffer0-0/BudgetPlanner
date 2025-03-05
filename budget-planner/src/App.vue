@@ -10,6 +10,7 @@ import IconPlus from "@/components/icons/IconPlus.vue";
 import BarIcon from "@/components/icons/BarIcon.vue";
 import DonutIcon from "./components/icons/DonutIcon.vue";
 import PieIcon from "@/components/icons/PieIcon.vue";
+import CloseIcon from "@/components/icons/CloseIcon.vue";
 // Регистрируем модули Chart.js
 Chart.register(...registerables);
 
@@ -135,8 +136,8 @@ const getRandomColor = () => {
               <span class="text-lg font-semibold">{{ category.name }}</span>
               <div class="flex gap-2">
                 <span class="text-lg">{{ category.amount }} {{ currency }}</span>
-                <button @click="removeCategory(category.id)" class="text-white text-sm">
-                  ✖
+                <button @click="removeCategory(category.id)" class="text-sm">
+                  <CloseIcon/>
                 </button>
               </div>
             </li>

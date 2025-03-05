@@ -11,7 +11,8 @@ import BarIcon from "@/components/icons/BarIcon.vue";
 import DonutIcon from "./components/icons/DonutIcon.vue";
 import PieIcon from "@/components/icons/PieIcon.vue";
 import CloseIcon from "@/components/icons/CloseIcon.vue";
-// Регистрируем модули Chart.js
+import domtoimage from "dom-to-image";
+import jsPDF from "jspdf";// Регистрируем модули Chart.js
 Chart.register(...registerables);
 
 const totalBudget = ref(500000); // Общий бюджет
@@ -80,6 +81,43 @@ function removeCategory(id: number) {
 const getRandomColor = () => {
   return `hsla(${~~(360 * Math.random())}, 80%,  65%, 0.8)`
 };
+
+const pdfContent = ref<HTMLElement | null>(null);
+
+import { nextTick } from "vue";
+
+function overrideColorsForPDF() {
+  document.querySelectorAll("*").forEach((el) => {
+    const computedStyle = window.getComputedStyle(el);
+    if (computedStyle.color.includes("oklch") || computedStyle.backgroundColor.includes("oklch")) {
+      el.style.color = "black"; // Fallback color
+      el.style.backgroundColor = "#ffffff"; // Fallback color
+    }
+  });
+}
+
+async function generatePdf() {
+  if (!pdfContent.value) {
+    console.error("Ошибка: pdfContent не найден!");
+    return;
+  }
+
+  try {
+    const pdf = new jsPDF("p", "mm", "a4");
+    const scaleFactor = 2;
+
+    const dataUrl = await domtoimage.toPng(pdfContent.value, {
+      quality: 0.98,
+      width: pdfContent.value.offsetWidth * scaleFactor,
+      height: pdfContent.value.offsetHeight * scaleFactor
+    });
+
+    pdf.addImage(dataUrl, "PNG", 10, 10, 190, 0);
+    pdf.save("budget-report.pdf");
+  } catch (error) {
+    console.error("Ошибка при генерации PDF:", error);
+  }
+}
 </script>
 
 <template>
@@ -87,6 +125,7 @@ const getRandomColor = () => {
     <div class="max-w-6xl mx-auto text-center">
       <h1 class="text-6xl font-extrabold text-green-900">Monthly Budget Planner</h1>
       <p class="text-gray-600 mt-2">Управляй своим бюджетом легко!</p>
+      <button @click="generatePdf">Скачать PDF</button>
 
       <!-- Ввод общего бюджета -->
       <div class="mt-6 bg-gray-100 p-4 rounded-lg">
@@ -126,7 +165,7 @@ const getRandomColor = () => {
         </div>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mb-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mb-4" ref="pdfContent">
         <!-- Список категорий -->
         <div class="flex flex-col bg-gray-100 p-4 rounded-lg min-h-[300px] mt-6" v-if="categories.length > 0">
           <h2 class="text-xl font-bold mb-2">Категории расходов</h2>

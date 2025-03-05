@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import {PieChart} from "vue-chart-3";
+import { Chart, registerables } from "chart.js";
+
+// Регистрируем модули Chart.js
+Chart.register(...registerables);
 
 const totalBudget = ref(500000); // Общий бюджет
 const category = ref({ name: "", amount: 0 });
@@ -11,6 +16,24 @@ const categories = ref([
   { id: 4, name: "Откладывание", amount: 70000 },
   { id: 5, name: "Свободные деньги", amount: 50000 },
 ]);
+
+const options = computed(() => ({
+  responsive: true,
+  plugins: {
+    legend: {
+      display: false, // Отключаем отображение легенды
+    },
+  },
+}));
+const budgetData = computed(() => ({
+  labels: categories.value.map((c) => c.name),
+  datasets: [
+    {
+      data: categories.value.map((c) => c.amount),
+      backgroundColor: categories.value.map((c) => c.color),
+    },
+  ],
+}));
 
 function addCategory() {
   if (category.value.name && category.value.amount) {
@@ -89,6 +112,11 @@ function removeCategory(id: number) {
               </div>
             </li>
           </ul>
+        </div>
+
+        <!-- Диаграмма -->
+        <div class="mt-8">
+          <PieChart :chartData="budgetData" :options="options"/>
         </div>
       </div>
     </div>

@@ -140,7 +140,7 @@ const getRandomColor = () => {
               <span class="text-lg font-semibold">{{ category.name }}</span>
               <div class="flex gap-2">
                 <span class="text-lg">{{ category.amount }} {{ currency }}</span>
-                <button @click="removeCategory(category.id)" class="text-sm">
+                <button @click="removeCategory(category.id)" class="text-sm hover:text-red-500">
                   <CloseIcon/>
                 </button>
               </div>

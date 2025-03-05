@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import {PieChart} from "vue-chart-3";
-import { Chart, registerables } from "chart.js";
+import {ref, computed} from "vue";
+import {
+  BarChart,
+  DoughnutChart,
+  PieChart,
+} from "vue-chart-3";
+import {Chart, registerables} from "chart.js";
 import IconPlus from "@/components/icons/IconPlus.vue";
 
 import BarIcon from "@/components/icons/BarIcon.vue";
@@ -140,7 +144,6 @@ const getRandomColor = () => {
           </ul>
         </div>
 
-          <PieChart :chartData="budgetData" :options="options"/>
         <div class="mt-6">
           <div class="flex space-x-3 mb-4 justify-end">
             <button
@@ -154,6 +157,10 @@ const getRandomColor = () => {
           </div>
           <!-- Диаграмма -->
           <div class="mt-8">
+            <PieChart v-if="selectedChart === 'pie'" :chartData="budgetData" :options="options"/>
+            <DoughnutChart v-if="selectedChart === 'doughnut'" :chartData="budgetData"
+                           :options="options"/>
+            <BarChart v-if="selectedChart === 'bar'" :chartData="budgetData" :options="options"/>
           </div>
         </div>
       </div>

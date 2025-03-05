@@ -94,7 +94,7 @@ const getRandomColor = () => {
         <input
           v-model="totalBudget"
           type="number"
-          class="mt-2 p-2 w-75 border rounded-md"
+          class="mt-2 p-2 w-75 border rounded-md text-center"
         />
         <p class="text-gray-700 font-bold mt-2">Остаток: {{ remainingBudget }} {{ currency }}</p>
         <p v-if="remainingBudget < 0" class="text-red-600 font-bold">Вы вышли за бюджет!</p>

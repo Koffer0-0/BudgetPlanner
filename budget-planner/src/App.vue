@@ -61,25 +61,7 @@ function removeCategory(id: number) {
 }
 
 const getRandomColor = () => {
-  const colors = ["#e74c3c", "#8e44ad", "#3498db", "#f1c40f", "#2ecc71", "#34495e"];
-  return colors[Math.floor(Math.random() * colors.length)];
-};
-
-const getTextColor = (bgColor) => {
-  const hex = bgColor.replace("#", "");
-  const r = parseInt(hex.substr(0, 2), 16);
-  const g = parseInt(hex.substr(2, 2), 16);
-  const b = parseInt(hex.substr(4, 2), 16);
-  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-  return brightness > 128 ? "#000" : "#FFF";
-}
-
-const getUniqueColor = () => {
-  let color;
-  do {
-    color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")}`;
-  } while (usedColors.value.has(color));
-  return color;
+  return `hsla(${~~(360 * Math.random())}, 80%,  65%, 0.8)`
 };
 </script>
 
@@ -110,11 +92,13 @@ const getUniqueColor = () => {
             class="p-2 border rounded-md w-36 text-center"
             min="0"
             placeholder="0"
+            @keyup.enter="addCategory"
           />
           <input
             v-model="category.name"
             class="p-2 border rounded-md w-1/3 min-w-[120px]"
             placeholder="Название"
+            @keyup.enter="addCategory"
           />
           <button
             @click="addCategory"
@@ -134,7 +118,7 @@ const getUniqueColor = () => {
               v-for="category in categories"
               :key="category.name"
               class="flex justify-between items-center px-4 py-3 rounded text-black shadow-md"
-              :style="{ backgroundColor: category.color, color: getTextColor(category.color) }"
+              :style="{ backgroundColor: category.color }"
             >
               <span class="text-lg font-semibold">{{ category.name }}</span>
               <div class="flex gap-2">

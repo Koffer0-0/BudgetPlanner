@@ -2,6 +2,7 @@
 import { ref, computed } from "vue";
 import {PieChart} from "vue-chart-3";
 import { Chart, registerables } from "chart.js";
+import IconPlus from "@/components/icons/IconPlus.vue";
 
 // Регистрируем модули Chart.js
 Chart.register(...registerables);

@@ -45,6 +45,10 @@ const remainingBudget = computed(() => {
   return totalBudget.value - categories.value.reduce((sum, cat) => sum + cat.amount, 0);
 });
 
+const totalExpense = computed(() => {
+  return categories.value.reduce((sum, cat) => sum + cat.amount, 0);
+});
+
 // Данные для графика
 const budgetData = computed(() => ({
   labels: categories.value.map((c) => c.name),
@@ -124,9 +128,9 @@ const getRandomColor = () => {
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mb-4">
         <!-- Список категорий -->
-        <div class="mt-6 bg-gray-100 p-4 rounded-lg" v-if="categories.length > 0">
+        <div class="flex flex-col bg-gray-100 p-4 rounded-lg min-h-[300px] mt-6" v-if="categories.length > 0">
           <h2 class="text-xl font-bold mb-2">Категории расходов</h2>
-          <ul class="space-y-2">
+          <ul class="space-y-2 flex-grow">
             <li
               v-for="category in categories"
               :key="category.name"
@@ -142,6 +146,9 @@ const getRandomColor = () => {
               </div>
             </li>
           </ul>
+
+          <!-- Total внизу и слева -->
+          <span class="text-lg mt-auto self-start font-semibold">Total: {{ totalExpense }} {{ currency }}</span>
         </div>
 
         <div class="mt-6">

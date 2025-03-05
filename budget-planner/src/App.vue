@@ -4,12 +4,20 @@ import {PieChart} from "vue-chart-3";
 import { Chart, registerables } from "chart.js";
 import IconPlus from "@/components/icons/IconPlus.vue";
 
+import BarIcon from "@/components/icons/BarIcon.vue";
+import DonutIcon from "./components/icons/DonutIcon.vue";
+import PieIcon from "@/components/icons/PieIcon.vue";
 // Регистрируем модули Chart.js
 Chart.register(...registerables);
 
 const totalBudget = ref(500000); // Общий бюджет
 const category = ref({ name: "", amount: 0 });
 
+const chartTypes = [
+  { value: "pie", icon: PieIcon },
+  { value: "doughnut", icon: DonutIcon },
+  { value: "bar", icon: BarIcon },
+];
 const categories = ref([
   { id: 1, name: "Коммуналка", amount: 30200, color: "#FF6384" },
   { id: 2, name: "Кредит", amount: 50000, color: "#36A2EB" },
@@ -17,6 +25,7 @@ const categories = ref([
   { id: 4, name: "Откладывание", amount: 70000, color: "#4BC0C0" },
   { id: 5, name: "Свободные деньги", amount: 50000, color: "#9966FF" },
 ]);
+const selectedChart = ref("pie"); // По умолчанию Pie Chart
 
 const options = computed(() => ({
   responsive: true,
@@ -131,9 +140,21 @@ const getRandomColor = () => {
           </ul>
         </div>
 
-        <!-- Диаграмма -->
-        <div class="mt-8">
           <PieChart :chartData="budgetData" :options="options"/>
+        <div class="mt-6">
+          <div class="flex space-x-3 mb-4 justify-end">
+            <button
+              v-for="type in chartTypes"
+              :key="type.value"
+              @click="selectedChart = type.value"
+              :class="['px-4 py-2 rounded', selectedChart === type.value ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600']"
+            >
+              <component :is="type.icon" class="h-8 w-8"/>
+            </button>
+          </div>
+          <!-- Диаграмма -->
+          <div class="mt-8">
+          </div>
         </div>
       </div>
     </div>

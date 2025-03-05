@@ -20,6 +20,7 @@ const chartTypes = [
   { value: "bar", icon: BarIcon },
 ];
 const category = ref({name: "", amount: 0});
+const currency = ref("₸")
 const categories = ref([
   {id: 1, name: "Коммуналка", amount: 30200, color: "#FF6384"},
   {id: 2, name: "Кредит", amount: 50000, color: "#36A2EB"},
@@ -90,7 +91,7 @@ const getRandomColor = () => {
           type="number"
           class="mt-2 p-2 w-75 border rounded-md"
         />
-        <p class="text-gray-700 font-bold mt-2">Остаток: {{ remainingBudget }}₸</p>
+        <p class="text-gray-700 font-bold mt-2">Остаток: {{ remainingBudget }} {{ currency }}</p>
         <p v-if="remainingBudget < 0" class="text-red-600 font-bold">Вы вышли за бюджет!</p>
       </div>
 
@@ -133,7 +134,7 @@ const getRandomColor = () => {
             >
               <span class="text-lg font-semibold">{{ category.name }}</span>
               <div class="flex gap-2">
-                <span class="text-lg">{{ category.amount }}₸</span>
+                <span class="text-lg">{{ category.amount }} {{ currency }}</span>
                 <button @click="removeCategory(category.id)" class="text-white text-sm">
                   ✖
                 </button>

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(findstr -i \"jspdf\\\\|dom-to\")",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Temir\\\\Documents\\\\GitHub\\\\BudgetPlanner\\\\budget-planner\\\\node_modules\" | Where-Object { $_.Name -match \"jspdf|dom-to\" } | Select-Object Name)",
+      "Read(//mnt/c/Users/Temir/Documents/GitHub/BudgetPlanner/**)",
+      "Bash(npm install *)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Users/Temir/AppData/Roaming/**)",
+      "Bash(npm run *)"
+    ]
+  }
+}

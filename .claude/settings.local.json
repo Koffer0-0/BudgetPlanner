@@ -7,7 +7,9 @@
       "Bash(npm install *)",
       "Read(//c/Program Files/**)",
       "Read(//c/Users/Temir/AppData/Roaming/**)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(Select-String -Path \"budget-planner\\\\src\\\\views\\\\PlanView.vue\" -Pattern \"</main>\" -CaseSensitive)",
+      "Bash(Select-Object LineNumber, Line)"
     ]
   }
 }

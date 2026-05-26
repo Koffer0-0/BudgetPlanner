@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useBudgetStore, getNextColor } from '@/stores/budget'
 import { useI18n } from '@/composables/useI18n'
@@ -50,6 +50,10 @@ const totalExpense = computed(() =>
 )
 
 const balance = computed(() => totalIncome.value - totalExpense.value)
+
+const pdfDate = computed(() =>
+  new Date().toLocaleDateString(t('intlLocale') as string, { day: 'numeric', month: 'long', year: 'numeric' }),
+)
 
 const chartData = computed(() => {
   const cats = plan.value?.categories ?? []
@@ -187,6 +191,7 @@ async function applyOklchPatch(): Promise<() => void> {
 async function generatePdf() {
   if (!pdfSection.value || isGeneratingPdf.value) return
   isGeneratingPdf.value = true
+  await nextTick()
 
   const restoreStyles = await applyOklchPatch()
   try {
@@ -195,26 +200,38 @@ async function generatePdf() {
       backgroundColor: '#f8fafc',
       useCORS: true,
       logging: false,
+      onclone: (clonedDoc: Document) => {
+        const patch = (css: string) =>
+          css.replace(/oklch\([^)]+\)/g, oklchToRgb).replace(/oklab\([^)]+\)/g, oklabToRgb)
+        clonedDoc.querySelectorAll<HTMLStyleElement>('style').forEach((el) => {
+          if (el.textContent) el.textContent = patch(el.textContent)
+        })
+        clonedDoc.querySelectorAll<HTMLElement>('[style]').forEach((el) => {
+          const s = el.getAttribute('style') ?? ''
+          if (s.includes('oklch') || s.includes('oklab')) el.setAttribute('style', patch(s))
+        })
+        // Remove delete buttons — they are opacity-0 in the UI but still take layout space,
+        // which can push amount text outside the card in the narrower PDF column.
+        clonedDoc.querySelectorAll<HTMLElement>('.opacity-0').forEach((el) => {
+          el.style.display = 'none'
+        })
+      },
     })
 
+    // Fit image into A4 page (usable area: 190 × 277 mm)
     const pdf = new jsPDF('p', 'mm', 'a4')
-    const imgWidth = 190
-    const imgHeight = (canvas.height * imgWidth) / canvas.width
+    const PAGE_W = 190
+    const PAGE_H = 277
+    const ratio = canvas.height / canvas.width
+    let imgW = PAGE_W
+    let imgH = imgW * ratio
+    if (imgH > PAGE_H) {
+      imgH = PAGE_H
+      imgW = imgH / ratio
+    }
+    const xOff = 10 + (PAGE_W - imgW) / 2
 
-    // Header
-    pdf.setFontSize(20)
-    pdf.setTextColor(15, 23, 42)
-    pdf.text(plan.value?.name ?? 'Бюджет', 10, 14)
-
-    pdf.setFontSize(10)
-    pdf.setTextColor(100, 116, 139)
-    pdf.text(
-      new Date().toLocaleDateString(t('intlLocale') as string, { day: 'numeric', month: 'long', year: 'numeric' }),
-      10,
-      20,
-    )
-
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 10, 26, imgWidth, imgHeight)
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', xOff, 10, imgW, imgH)
     pdf.save(`${plan.value?.name ?? 'budget'}-report.pdf`)
   } catch (err) {
     console.error('PDF error:', err)
@@ -267,6 +284,14 @@ async function generatePdf() {
     </header>
 
     <main class="max-w-5xl mx-auto px-6 py-6">
+      <div ref="pdfSection">
+
+      <!-- PDF header: v-if so it is absent from the DOM entirely in normal use -->
+      <div v-if="isGeneratingPdf" class="bg-white rounded-2xl px-5 py-4 shadow-sm border border-slate-100 mb-4">
+        <h1 class="text-xl font-bold text-slate-900">{{ plan?.name }}</h1>
+        <p class="text-sm text-slate-400 mt-1">{{ pdfDate }}</p>
+      </div>
+
       <!-- Summary cards -->
       <div class="grid grid-cols-3 gap-4 mb-6">
         <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
@@ -302,8 +327,8 @@ async function generatePdf() {
         </div>
       </div>
 
-      <!-- PDF-captured section -->
-      <div ref="pdfSection" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <!-- Categories + chart grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <!-- Categories panel -->
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
           <div class="flex items-center justify-between mb-4">
@@ -480,6 +505,8 @@ async function generatePdf() {
           </div>
         </div>
       </div>
+
+      </div><!-- end pdfSection wrapper -->
     </main>
   </div>
 </template>
